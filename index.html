@@ -170,7 +170,7 @@ let THREE, OrbitControls, scene, camera, renderer, controls, raycaster, pointer,
 const modelById=new Map(), labelById=new Map(), rowById=new Map();
 let playerCharacter=null, playerLimbs=null, guideCharacters=[], crowdAgents=[], movementKeys=new Set();
 let touchMoveX=0, touchMoveZ=0, joystickPointerId=null;
-let runMode=false, playerVelocity=new THREE.Vector3(), jumpStartedAt=0;
+let runMode=false, playerVelocity=null, jumpStartedAt=0;
 let playerWalkPhase=0, previousAnimationTime=0, activeDialogueGuide=null, activeDialogueLine=0, crowdToastUntil=0, bumpMessageIndex=0;
 const characterMaterialCache=new Map();
 const bumpMessages=['欸欸！借過一下，我的方塊差點散開了！','收到碰撞通知：同學向後退一步，沒有任何反擊。','哎唷！我只是路過的像素居民啦！','方塊同學向後滑了一步：和平校園，請繼續探索！','同學：哇！這就是世新版的碰碰車嗎？'];
@@ -192,7 +192,13 @@ async function boot(){
  try{
   $('loadingTitle').textContent='正在載入 3D 引擎…';
   const base='https://cdn.jsdelivr.net/npm/three@0.160.0';
-  [THREE,{OrbitControls}]=await Promise.all([import(base+'/build/three.module.js'),import(base+'/examples/jsm/controls/OrbitControls.js')]);
+  [THREE,{OrbitControls}]=await Promise.all([
+  import(base+'/build/three.module.js'),
+  import(base+'/examples/jsm/controls/OrbitControls.js')
+]);
+
+playerVelocity = new THREE.Vector3();
+
   initScene();buildCampus();buildCharacters();renderFilters();renderList();setupUI();resizeRenderer();animate();loading.classList.add('hidden');setTimeout(()=>loading.style.display='none',350);
  }catch(err){console.error(err);setLoadingError('無法載入 Three.js 或 OrbitControls。');}
 }
